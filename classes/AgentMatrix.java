@@ -5,10 +5,10 @@ import state_class.State;
 public class AgentMatrix {
 	private int numberOfAgent;
 	private int sizeOfMatrix;
-	private MyMatrix<Double> agentMatrix;
-	private MyMatrix<Double> vectorB;
-	private MyMatrix<Double> secondB;
-	private MyMatrix<Double> resultVector;
+	public MyMatrix<Double> agentMatrix;
+	public MyMatrix<Double> vectorB;
+	public MyMatrix<Double> secondB;
+	public MyMatrix<Double> resultVector;
 	private State[] s;
 
 
@@ -26,6 +26,10 @@ public class AgentMatrix {
 		vectorB.setValue(sizeOfMatrix-1,0, 1.0);
 		secondB.fillWithZero();
 
+	}
+
+	public MyMatrix<Double> getAgentMatrix(){
+		return agentMatrix;
 	}
 
 	public void showMeTheMatrix(){

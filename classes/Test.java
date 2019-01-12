@@ -29,10 +29,10 @@ public class Test {
                 return results;
         }
 
-	public void countAndWriteTimeOfExecition(String fileName) throws IOException {
+	public void countAndWriteTimeOfExecition() throws IOException {
         int n=25;
 	    double startTime1, endTime1, startTime2, endTime2, startTime3, endTime3, startTime4, endTime4;
-	    FileWriter fileWriter = new FileWriter(fileName);
+	    FileWriter fileWriter = new FileWriter("Wyniki_czasow.txt");
 	    PrintWriter printWriter = new PrintWriter(fileWriter);
 	    printWriter.println("Gauss;GaussSeidel;n = " + n + ";");
     //for (int n=3;n<=30;n++) {

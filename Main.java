@@ -6,9 +6,10 @@ public class Main {
     public static void main(String[] args) {
     	Test t1 = new Test();
     	try {
-    		t1.countAndWriteTimeOfExecition("Wyniki czasow");
+    		t1.countAndWriteTimeOfExecition();
 		} catch (Exception e) {
     		System.out.println("błąd przy zapisie pliku");
 		}
+
     }
 }

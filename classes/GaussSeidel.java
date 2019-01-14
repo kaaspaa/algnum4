@@ -23,6 +23,9 @@ public class GaussSeidel {
 
 		prev = new double[sizeOfMatrix];
 		vectorB = new double[sizeOfMatrix];
+
+		fulfillMatrix();
+		setValuesOfB();
 	}
 
 	public void fulfillMatrix() {
@@ -39,8 +42,6 @@ public class GaussSeidel {
 	}
 
 	public MyMatrix<Double> countGaussSeidelVector(){
-		fulfillMatrix();
-		setValuesOfB();
 
 		for(int i=0;i<sizeOfMatrix;i++) {
 			resultVector.setValue(i, 0, 0.0);
@@ -61,20 +62,18 @@ public class GaussSeidel {
 					prev[l] = resultVector.getValue(l,0);
 			}
 		}
-		System.out.println("Wynik Gaussa - Seidela:");
-		resultVector.printMatrix();
+		//System.out.println("Wynik Gaussa - Seidela:");
+		//resultVector.printMatrix();
 		return resultVector;
 	}
 
-	public MyMatrix<Double> countSecondB() {
-		for(int i=0;i<sizeOfMatrix;i++){
-			for(int l=0;l<sizeOfMatrix;l++){
-				secondB.setValue(l,0,secondB.getValue(l,0) + matrixA.getValue(l,i) * resultVector.getValue(l,0));
-			}
-		}
-		System.out.println("Drugie B:\n");
-		secondB.printMatrix();
-		return secondB;
+	public double countTime(){
+		double startTime, endTime;
+		startTime = System.nanoTime();
+		countGaussSeidelVector();
+		endTime = System.nanoTime();
+
+		return endTime - startTime;
 	}
 
 }

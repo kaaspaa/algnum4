@@ -74,6 +74,24 @@ public class MyMatrix<T extends Number> {
             int max = p;
             FlipBiggestRow(matrix, vector, n, p, max);
             for (int i = p + 1; i < n; i++) {
+                //if(matrix.matrix[i][p].doubleValue() != 0.0)
+                CleanMatrix(matrix, vector, n, p, i);
+            }
+        }
+
+        MyMatrix<T> resultVector = new MyMatrix(classType, vector.rows, 1);
+        CountBackwardResult(matrix, vector, n, resultVector);
+        return resultVector;
+    }
+
+    public MyMatrix<T> upgradedPartialChoiseGauss(MyMatrix<T> matrix, MyMatrix<T> vector) {
+
+        int n = vector.rows;
+        for (int p = 0; p < n; p++) {
+
+            int max = p;
+            FlipBiggestRow(matrix, vector, n, p, max);
+            for (int i = p + 1; i < n; i++) {
                 if(matrix.matrix[i][p].doubleValue() != 0.0)
                 CleanMatrix(matrix, vector, n, p, i);
             }

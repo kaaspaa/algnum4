@@ -5,10 +5,10 @@ import state_class.State;
 public class AgentMatrix {
 	private int numberOfAgent;
 	private int sizeOfMatrix;
-	public MyMatrix<Double> agentMatrix;
-	public MyMatrix<Double> vectorB;
-	public MyMatrix<Double> secondB;
-	public MyMatrix<Double> resultVector;
+	private MyMatrix<Double> agentMatrix;
+	private MyMatrix<Double> vectorB;
+	private MyMatrix<Double> secondB;
+	private MyMatrix<Double> resultVector;
 	private State[] s;
 
 
@@ -21,15 +21,19 @@ public class AgentMatrix {
 		secondB = new MyMatrix<Double>(Double.class,sizeOfMatrix,1);
 		resultVector = new MyMatrix<Double>(Double.class,sizeOfMatrix,1);
 		//wypelnianie zerami
-		agentMatrix.fillWithZero();
+		//agentMatrix.fillWithZero();
 		vectorB.fillWithZero();
 		vectorB.setValue(sizeOfMatrix-1,0, 1.0);
-		secondB.fillWithZero();
+		//secondB.fillWithZero();
+		fulfillMatrix();
 
 	}
 
 	public MyMatrix<Double> getAgentMatrix(){
 		return agentMatrix;
+	}
+	public double getAgentMatrixValue(int row,int col){
+		return agentMatrix.getValue(row,col);
 	}
 
 	public void showMeTheMatrix(){
@@ -54,15 +58,12 @@ public class AgentMatrix {
 	}
 
 	public void setAgentMatrixValue(int index1, int y, int n) {
-		int u = numberOfAgent - y - n;
 		double moreY = ((double) y / (double) numberOfAgent) * ((Double.valueOf(numberOfAgent - y - n)) / ((double) numberOfAgent - 1.0)) + ((Double.valueOf(numberOfAgent - y - n)) / numberOfAgent) * ((double) y / (double) (numberOfAgent - 1));
 		double moreN = ((double) n / (double) numberOfAgent) * ((Double.valueOf(numberOfAgent - y - n)) / ((double) numberOfAgent - 1.0)) + ((Double.valueOf(numberOfAgent - y - n)) / numberOfAgent) * ((double) n / (double) (numberOfAgent - 1));
 		double moreU = ((double) y / (double) numberOfAgent) * ((Double.valueOf(n)) / ((double) numberOfAgent - 1.0)) + ((Double.valueOf(n)) / numberOfAgent) * ((double) y / (double) (numberOfAgent - 1));
 		double stays = 1.0 - moreN - moreU - moreY;
-//		if (stays < 0.00000000000001)
-//			stays = 0;
-		System.out.println("dla P(" + y + "," + n + ")");
-		System.out.println("N - " + moreN + " Y - " + moreY + " U - " + moreU + " stays - " + stays);
+		//System.out.println("dla P(" + y + "," + n + ")");
+		//System.out.println("N - " + moreN + " Y - " + moreY + " U - " + moreU + " stays - " + stays);
 
 		int index2 = 0;
 		for (int i=0;i<=numberOfAgent;i++){
@@ -93,11 +94,18 @@ public class AgentMatrix {
 			agentMatrix.setValue(index1,index2,0.0);
 	}
 
-	public MyMatrix<Double> countResultVector(){
+	public MyMatrix<Double> countResultVectorSlow(){
 		resultVector = agentMatrix.partialChoiseGauss(agentMatrix, vectorB);
+		//System.out.println("Results Gauss:");
+		//resultVector.printMatrix();
 
-		System.out.println("Results Gauss:");
-		resultVector.printMatrix();
+		return resultVector;
+	}
+
+	public MyMatrix<Double> countResultVectorFast(){
+		resultVector = agentMatrix.upgradedPartialChoiseGauss(agentMatrix, vectorB);
+		//System.out.println("Results Gauss:");
+		//resultVector.printMatrix();
 
 		return resultVector;
 	}
@@ -112,20 +120,27 @@ public class AgentMatrix {
 		return avgValue;
 	}
 
+	public double countTimeSlow(){
+		double startTime,endTime;
+		System.out.println();
+		startTime = System.nanoTime();
+		resultVector = agentMatrix.partialChoiseGauss(agentMatrix,vectorB);
+		endTime = System.nanoTime();
 
-	public MyMatrix<Double> countSecondBGauss(){
-		vectorB.fillWithZero();
-		vectorB.setValue(sizeOfMatrix-1,0, 1.0);
-		fulfillMatrix();
+		//System.out.println("Gauss wolny:");
+		//resultVector.printMatrix();
+		return endTime - startTime;
+	}
 
-		for(int i=0;i<sizeOfMatrix;i++){
-			for(int l=0;l<sizeOfMatrix;l++){
-				secondB.setValue(l,0,secondB.getValue(l,0) + agentMatrix.getValue(l,i) * resultVector.getValue(l,0));
-			}
-		}
-		System.out.println("Drugie B:\n");
-		secondB.printMatrix();
-		return secondB;
+	public double countTimeFast(){
+		double startTime,endTime;
+		startTime = System.nanoTime();
+		resultVector = agentMatrix.upgradedPartialChoiseGauss(agentMatrix,vectorB);
+		endTime = System.nanoTime();
+
+		//System.out.println("Gauss szybki");
+		//resultVector.printMatrix();
+		return endTime - startTime;
 	}
 
 }

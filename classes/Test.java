@@ -64,8 +64,8 @@ public class Test {
 	    double time1, time2, time3, time4, startTime1, endTime1, startTime2, endTime2, startTime3, endTime3,startTime4, endTime4;
 	    FileWriter fileWriter = new FileWriter("Wyniki_czasow.csv");
 	    PrintWriter printWriter = new PrintWriter(fileWriter);
-	    printWriter.println("Gauss;Gauss(upgraded);GaussSeidel;Sparse;n = " + n + ";");
-    for (n=10;n<=20;n++) {
+	    printWriter.println(";n;Gauss;Gauss(upgraded);GaussSeidel;Sparse; ;n;Gauss;Gauss(upgraded);GaussSeidel;Sparse;");
+    for (n=10;n<=25;n++) {
         //printWriter.println("Gauss;GaussSeidel;n = " + n + ";");
 
         //for (int q = 1; q <= 10; q++) {
@@ -86,8 +86,8 @@ public class Test {
             time4 = countResultsSparseTime(n);
             endTime4 = System.nanoTime();
 
-            printWriter.println("dzialanie" + (time1) + ";" + (time2) + ";" + (time3) + ";" + (time4) + ";" +
-            "budowanie" + (endTime1 - startTime1 - time1) + ";" + (endTime2 - startTime2 - time2) + ";" + (endTime3 - startTime3 - time3) + ";" + (endTime4 - startTime4 - time4) + ";");
+            printWriter.println("dzialanie;" + n + ";" + (time1) + ";" + (time2) + ";" + (time3) + ";" + (time4) +
+            ";budowanie;" + n + ";" + (endTime1 - startTime1 - time1) + ";" + (endTime2 - startTime2 - time2) + ";" + (endTime3 - startTime3 - time3) + ";" + (endTime4 - startTime4 - time4) + ";");
             //}
     }
             printWriter.close();

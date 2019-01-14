@@ -7,9 +7,7 @@ public class AgentMatrix {
 	private int sizeOfMatrix;
 	private MyMatrix<Double> agentMatrix;
 	private MyMatrix<Double> vectorB;
-	private MyMatrix<Double> secondB;
 	private MyMatrix<Double> resultVector;
-	private State[] s;
 
 
 	public AgentMatrix(int N){
@@ -18,7 +16,6 @@ public class AgentMatrix {
 
 		agentMatrix = new MyMatrix<Double>(Double.class,sizeOfMatrix);
 		vectorB = new MyMatrix<Double>(Double.class,sizeOfMatrix,1);
-		secondB = new MyMatrix<Double>(Double.class,sizeOfMatrix,1);
 		resultVector = new MyMatrix<Double>(Double.class,sizeOfMatrix,1);
 		//wypelnianie zerami
 		//agentMatrix.fillWithZero();
@@ -122,7 +119,6 @@ public class AgentMatrix {
 
 	public double countTimeSlow(){
 		double startTime,endTime;
-		System.out.println();
 		startTime = System.nanoTime();
 		resultVector = agentMatrix.partialChoiseGauss(agentMatrix,vectorB);
 		endTime = System.nanoTime();

@@ -50,7 +50,7 @@ public class SparseMatrix {
 		}
 	}
 
-	public void setAgentMatrixValue(int index1, int y, int n) {
+	private void setAgentMatrixValue(int index1, int y, int n) {
 		double moreY = ((double) y / (double) numberOfAgents) * ((Double.valueOf(numberOfAgents - y - n)) / ((double) numberOfAgents - 1.0)) + ((Double.valueOf(numberOfAgents - y - n)) / numberOfAgents) * ((double) y / (double) (numberOfAgents - 1));
 		double moreN = ((double) n / (double) numberOfAgents) * ((Double.valueOf(numberOfAgents - y - n)) / ((double) numberOfAgents - 1.0)) + ((Double.valueOf(numberOfAgents - y - n)) / numberOfAgents) * ((double) n / (double) (numberOfAgents - 1));
 		double moreU = ((double) y / (double) numberOfAgents) * ((Double.valueOf(n)) / ((double) numberOfAgents - 1.0)) + ((Double.valueOf(n)) / numberOfAgents) * ((double) y / (double) (numberOfAgents - 1));
@@ -68,7 +68,7 @@ public class SparseMatrix {
 
 	}
 
-	public void conditionSet(int index1, int index2, int y, int n, int currY, int currN, double moreY, double moreN, double moreU, double stays){
+	private void conditionSet(int index1, int index2, int y, int n, int currY, int currN, double moreY, double moreN, double moreU, double stays){
 		if(y == numberOfAgents && n == 0 && index2 == index1)
 			matrixA.set(index1,index2,1.0);
 		else if(y == 0 && n == numberOfAgents && index1 == index2)
@@ -87,7 +87,7 @@ public class SparseMatrix {
 			matrixA.set(index1,index2,0.0);
 	}
 
-	public void setValuesOfB() {
+	private void setValuesOfB() {
 		for(int i=0;i<sizeOfMatrix;i++){
 			matrixB.set(i,0,0.0);
 		}

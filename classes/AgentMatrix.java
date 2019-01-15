@@ -27,6 +27,8 @@ public class AgentMatrix {
 
 	public MyMatrix<Double> getAgentMatrix(){ return agentMatrix; }
 	public MyMatrix<Double> getMatrixB(){ return vectorB; }
+	public void setAgentMatrix(MyMatrix<Double> agentMatrix) {this.agentMatrix = agentMatrix;}
+	public void setVectorB(MyMatrix<Double> vectorB) {this.vectorB = vectorB;}
 	public double getAgentMatrixValue(int row,int col){
 		return agentMatrix.getValue(row,col);
 	}

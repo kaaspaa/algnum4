@@ -11,6 +11,8 @@ public class Main {
     		System.out.println("błąd przy zapisie pliku");
 		}
 
+		test.countApproxAndWrite();
+
 		//test.countResultsSparse(8);
 
     }

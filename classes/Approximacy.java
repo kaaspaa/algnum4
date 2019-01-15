@@ -25,6 +25,7 @@ public class Approximacy {
 	private double countT(int k,int casee){
 		double result;
 		Test test = new Test();
+
 		switch (casee) {
 			case 1:
 				{result = test.countSlowGaussTime(numberOfAgents) * countS(k);}
@@ -33,8 +34,9 @@ public class Approximacy {
 			case 3:
 				{result = test.countGaussSeidelTime(numberOfAgents) * countS(k);}
 			case 4:
-				{result = test.countResultsSparseTime(numberOfAgents) * countS(k);}
-			default: {
+				{result = test.countResultsSparseTime(numberOfAgents) * countS(k);
+				break;}
+				default: {
 				result = 0.0;
 			}
 		}
@@ -42,12 +44,12 @@ public class Approximacy {
 		return result;
 	}
 
-	private MyMatrix<Double> approx(int casee) {
+	public MyMatrix<Double> approx(int casee) {
 		//AgentMatrix agentMatrix = new AgentMatrix(numberOfAgents);
 		matrixB.fillWithZero();
 		matrixA.fillWithZero();
 		resultMatrix.fillWithZero();
-		for(int n=0;n<5;n++) {
+		for(int n=0;n<10;n++) {
 			for (int i = 0; i < m; i++) {
 				matrixB.setValue(i,0,matrixB.getValue(i,0) + countT(i,casee));
 				for(int l = 0; l < m; l++){
@@ -55,10 +57,16 @@ public class Approximacy {
 				}
 			}
 		}
-		resultMatrix.upgradedPartialChoiseGauss(matrixA,matrixB);
-		return resultMatrix;
+		System.out.println("A:");
+		matrixA.printMatrix();
+		System.out.println("B:");
+		matrixB.printMatrix();
+
+		MyMatrix<Double> pom = new MyMatrix<Double>(Double.class,m,1);
+		pom = resultMatrix.upgradedPartialChoiseGauss(matrixA,matrixB);
+		System.out.println("case - " + casee);
+		pom.printMatrix();
+		return pom;
 	}
-
-
 
 }

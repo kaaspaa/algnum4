@@ -60,12 +60,12 @@ public class Test {
     }
 
 	public void countAndWriteTimeOfExecition() throws IOException {
-        int n=60;
+        int n=10;
 	    double time1, time2, time3, time4, time5, startTime1, endTime1, startTime2, endTime2, startTime3, endTime3,startTime4, endTime4;
 	    FileWriter fileWriter = new FileWriter("Wyniki_czasow.csv");
 	    PrintWriter printWriter = new PrintWriter(fileWriter);
 	    printWriter.println(";n;Gauss;Gauss(upgraded);GaussSeidel;Sparse; ;n;Gauss;Gauss(upgraded);GaussSeidel;Sparse;");
-   // for (n=10;n<=60;n++) {
+    //for (n=10;n<=30;n++) {
         //printWriter.println("Gauss;GaussSeidel;n = " + n + ";");
 
         //for (int q = 1; q <= 10; q++) {
@@ -91,5 +91,18 @@ public class Test {
             //}
     //}
             printWriter.close();
+    }
+
+        public void countApproxAndWrite() {
+            Approximacy a3 = new Approximacy(3,5);
+            Approximacy a2 = new Approximacy(2,5);
+            Approximacy a22 = new Approximacy(2,5);
+            Approximacy a1 = new Approximacy(1,5);
+
+            a3.approx(1);
+            a2.approx(2);
+            a22.approx(3);
+            a1.approx(4);
         }
+
 }

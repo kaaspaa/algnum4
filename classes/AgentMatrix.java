@@ -23,12 +23,10 @@ public class AgentMatrix {
 		vectorB.setValue(sizeOfMatrix-1,0, 1.0);
 		//secondB.fillWithZero();
 		fulfillMatrix();
-
 	}
 
-	public MyMatrix<Double> getAgentMatrix(){
-		return agentMatrix;
-	}
+	public MyMatrix<Double> getAgentMatrix(){ return agentMatrix; }
+	public MyMatrix<Double> getMatrixB(){ return vectorB; }
 	public double getAgentMatrixValue(int row,int col){
 		return agentMatrix.getValue(row,col);
 	}

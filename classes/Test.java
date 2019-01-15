@@ -60,12 +60,12 @@ public class Test {
     }
 
 	public void countAndWriteTimeOfExecition() throws IOException {
-        int n=10;
-	    double time1, time2, time3, time4, startTime1, endTime1, startTime2, endTime2, startTime3, endTime3,startTime4, endTime4;
+        int n=60;
+	    double time1, time2, time3, time4, time5, startTime1, endTime1, startTime2, endTime2, startTime3, endTime3,startTime4, endTime4;
 	    FileWriter fileWriter = new FileWriter("Wyniki_czasow.csv");
 	    PrintWriter printWriter = new PrintWriter(fileWriter);
 	    printWriter.println(";n;Gauss;Gauss(upgraded);GaussSeidel;Sparse; ;n;Gauss;Gauss(upgraded);GaussSeidel;Sparse;");
-    for (n=10;n<=25;n++) {
+   // for (n=10;n<=60;n++) {
         //printWriter.println("Gauss;GaussSeidel;n = " + n + ";");
 
         //for (int q = 1; q <= 10; q++) {
@@ -89,7 +89,7 @@ public class Test {
             printWriter.println("dzialanie;" + n + ";" + (time1) + ";" + (time2) + ";" + (time3) + ";" + (time4) +
             ";budowanie;" + n + ";" + (endTime1 - startTime1 - time1) + ";" + (endTime2 - startTime2 - time2) + ";" + (endTime3 - startTime3 - time3) + ";" + (endTime4 - startTime4 - time4) + ";");
             //}
-    }
+    //}
             printWriter.close();
         }
 }

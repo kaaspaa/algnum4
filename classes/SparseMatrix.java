@@ -94,16 +94,17 @@ public class SparseMatrix {
 		matrixB.set(sizeOfMatrix-1,0,1.0);
 	}
 
-	public double countTime() {
+	public double countTime(){
 		double startTime,endTime;
 		double[] wynik = new double[sizeOfMatrix];
-		startTime = System.nanoTime();
-		wynik = solveSparseMatrix();
-		endTime = System.nanoTime();
+		DMatrixRMaj out = new DMatrixRMaj(sizeOfMatrix, 1);
 
-		//System.out.println("wyniki sparse:");
-		//for(int i=0;i<wynik.length;i++)
-		//	System.out.println(wynik[i]);
+		LinearSolverSparse<DMatrixSparseCSC, DMatrixRMaj> solver = LinearSolverFactory_DSCC.lu(NONE);
+
+		solver.setA(matrixA);
+		startTime = System.nanoTime();
+		solver.solve(matrixB,out);
+		endTime = System.nanoTime();
 
 		return endTime - startTime;
 	}

@@ -93,7 +93,11 @@ public class Test {
     public void countApproxAndWrite() throws IOException {
         FileWriter fileWriter = new FileWriter("Wyniki_approxymacji.csv");
         PrintWriter printWriter = new PrintWriter(fileWriter);
+        FileWriter fileWriter2 = new FileWriter("Porownanie_czasow.csv");
+        PrintWriter printWriter2 = new PrintWriter(fileWriter2);
+        double[] srednia = new double[4];
         printWriter.println("n;Gauss;zopzoptymalizowany Gauss;Gauss-Seidel;Sparse;wyliczony czas Gauss;wyliczony czas Gauss(z);wyliczony czas Gauss-Seidel;wyliczony czas Sparse;");
+        printWriter2.println("n;Gauss;zoptymalizowany Gauss;Gauss-Seidel;Sparse;czas z Wielomianu - czas wyliczony");
         for(int n=10;n<=20;n++) {
             Approximacy a3 = new Approximacy(3, n);
             Approximacy a2 = new Approximacy(2, n);
@@ -104,7 +108,6 @@ public class Test {
             MyMatrix<Double> answ2;
             MyMatrix<Double> answ22;
             MyMatrix<Double> answ3;
-            double[] srednia = new double[4];
 
             for (int i = 0; i < 4; i++)
                 srednia[i] = 0.0;
@@ -135,9 +138,16 @@ public class Test {
                 printWriter.print(srednia[i] + ";");
             }
             printWriter.println();
+            printWriter.println();
+
+            //drugie
+
+            printWriter2.println(n + ";" + (countSlowGaussTime(n) - srednia[0]) + ";" +(countFastGaussTime(n) - srednia[1]) + ";" + (countGaussSeidelTime(n) - srednia[2]) + ";" + (countResultsSparseTime(n) - srednia[3]) + ";" );
 
         }
+
         printWriter.close();
+        printWriter2.close();
     }
 
 

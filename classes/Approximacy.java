@@ -56,14 +56,14 @@ public class Approximacy {
 		gaussSeidel.setSizeOfMatrix(m);
 		matrixA.fillWithZero();
 		resultMatrix.fillWithZero();
-		for(int n=0;n<10;n++) {
+		//for(int n=0;n<10;n++) {
 			for (int i = 0; i < m; i++) {
 				matB[i] += countT(i,casee);
 				for(int l = 0; l < m; l++){
 					matrixA.setValue(i,l,matrixA.getValue(i,l) + countS(l + i));
 				}
 			}
-		}
+		//}
 		System.out.println("A:");
 		matrixA.printMatrix();
 		System.out.println("B:");

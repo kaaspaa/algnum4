@@ -1,7 +1,5 @@
 package classes;
 
-import state_class.State;
-
 public class AgentMatrix {
 	private int numberOfAgent;
 	private int sizeOfMatrix;

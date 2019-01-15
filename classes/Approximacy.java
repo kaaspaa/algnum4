@@ -1,5 +1,8 @@
 package classes;
 
+import org.ejml.data.DMatrixRMaj;
+import org.ejml.data.DMatrixSparseCSC;
+
 public class Approximacy {
 	private int degree;
 	int numberOfAgents;
@@ -46,11 +49,11 @@ public class Approximacy {
 
 	public MyMatrix<Double> approx(int casee) {
 		GaussSeidel gaussSeidel = new GaussSeidel(numberOfAgents,200);
-		double[] matB = new double[numberOfAgents];
-		for(int i=0;i<numberOfAgents;i++)
+
+		double[] matB = new double[m];
+		for(int i=0;i<matB.length;i++)
 			matB[i] = 0.0;
 		gaussSeidel.setSizeOfMatrix(m);
-		matrixB.fillWithZero();
 		matrixA.fillWithZero();
 		resultMatrix.fillWithZero();
 		for(int n=0;n<10;n++) {

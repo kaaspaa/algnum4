@@ -13,19 +13,30 @@ public class SparseMatrix {
 
 
 	public SparseMatrix(int n){
+		//double time1,time2;
 		numberOfAgents = n;
 		sizeOfMatrix = ((numberOfAgents+1)*(numberOfAgents+2))/2;
 
 		matrixA = new DMatrixSparseCSC(sizeOfMatrix,sizeOfMatrix);
 		matrixB = new DMatrixRMaj(sizeOfMatrix,1);
 
+		//time1 = System.nanoTime();
 		fulfillMatrix();
+		//time2 = System.nanoTime();
+		//System.out.println("fulfill time = " + (time2 - time1));
 		setValuesOfB();
 		//System.out.print("Sparse: A\n");
 		//matrixA.print();
 		//System.out.println("B:");
 		//matrixB.print();
+	}
 
+	public void setMatrixA(DMatrixSparseCSC matrixA) {
+		this.matrixA = matrixA;
+	}
+
+	public void setMatrixB(DMatrixRMaj matrixB) {
+		this.matrixB = matrixB;
 	}
 
 	public double[] solveSparseMatrix(){
@@ -34,7 +45,9 @@ public class SparseMatrix {
 		LinearSolverSparse<DMatrixSparseCSC, DMatrixRMaj> solver = LinearSolverFactory_DSCC.lu(NONE);
 
 		solver.setA(matrixA);
+		System.out.println("uwu");
 		solver.solve(matrixB, out);
+		System.out.println('d');
 		return out.getData();
 	}
 
@@ -95,16 +108,21 @@ public class SparseMatrix {
 	}
 
 	public double countTime(){
-		double startTime,endTime;
+		double startTime,endTime,time1,time2;
 		double[] wynik = new double[sizeOfMatrix];
 		DMatrixRMaj out = new DMatrixRMaj(sizeOfMatrix, 1);
 
 		LinearSolverSparse<DMatrixSparseCSC, DMatrixRMaj> solver = LinearSolverFactory_DSCC.lu(NONE);
 
+		//time1 = System.nanoTime();
 		solver.setA(matrixA);
+		//time2 = System.nanoTime();
 		startTime = System.nanoTime();
 		solver.solve(matrixB,out);
 		endTime = System.nanoTime();
+		//System.out.println("czas seta = " + (time2-time1));
+		//System.out.println("czas solva = " + (endTime - startTime));
+		//System.out.println("roznica - " + ( (time2 - time1) - (endTime - startTime) ));
 
 		return endTime - startTime;
 	}

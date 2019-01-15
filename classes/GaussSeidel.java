@@ -28,6 +28,22 @@ public class GaussSeidel {
 		setValuesOfB();
 	}
 
+	public void setMatrixA(MyMatrix<Double> matrixA) {
+		this.matrixA = matrixA;
+	}
+
+	public void setVectorB(double[] arr){
+		vectorB = arr;
+	}
+
+	public void setSizeOfMatrix(int size){
+		sizeOfMatrix = size;
+	}
+
+	public void setResultVector(MyMatrix<Double> resultVector){
+		this.resultVector = resultVector;
+	}
+
 	public void fulfillMatrix() {
 		AgentMatrix ag = new AgentMatrix(numberOfAgents);
 		ag.fulfillMatrix();

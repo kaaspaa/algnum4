@@ -66,9 +66,7 @@ public class Test {
 	    PrintWriter printWriter = new PrintWriter(fileWriter);
 	    printWriter.println(";n;Gauss;Gauss(upgraded);GaussSeidel;Sparse; ;n;Gauss;Gauss(upgraded);GaussSeidel;Sparse;");
     //for (n=10;n<=30;n++) {
-        //printWriter.println("Gauss;GaussSeidel;n = " + n + ";");
 
-        //for (int q = 1; q <= 10; q++) {
             //Gauss wolny
             startTime1 = System.nanoTime();
             time1 = countSlowGaussTime(n);
@@ -88,21 +86,38 @@ public class Test {
 
             printWriter.println("dzialanie;" + n + ";" + (time1) + ";" + (time2) + ";" + (time3) + ";" + (time4) +
             ";budowanie;" + n + ";" + (endTime1 - startTime1 - time1) + ";" + (endTime2 - startTime2 - time2) + ";" + (endTime3 - startTime3 - time3) + ";" + (endTime4 - startTime4 - time4) + ";");
-            //}
+
     //}
             printWriter.close();
     }
+    public void countApproxAndWrite() throws IOException {
+        FileWriter fileWriter = new FileWriter("Wyniki_approxymacji.csv");
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+        printWriter.println("Gauss;zopzoptymalizowany Gauss;Gauss-Seidel;Sparse;");
+        for(int n=4;n<5;n++){
+            Approximacy a3 = new Approximacy(3, n);
+            Approximacy a2 = new Approximacy(2, n);
+            Approximacy a22 = new Approximacy(2, n);
+            Approximacy a1 = new Approximacy(1, n);
+            MyMatrix<Double> answ1;
+            MyMatrix<Double> answ2;
+            MyMatrix<Double> answ22;
+            MyMatrix<Double> answ3;
 
-        public void countApproxAndWrite() {
-            Approximacy a3 = new Approximacy(3,5);
-            Approximacy a2 = new Approximacy(2,5);
-            Approximacy a22 = new Approximacy(2,5);
-            Approximacy a1 = new Approximacy(1,5);
+            answ3 = a3.approx(1);
+            answ2 = a2.approx(2);
+            answ22 = a22.approx(3);
+            answ1 = a1.approx(4);
 
-            a3.approx(1);
-            a2.approx(2);
-            a22.approx(3);
-            a1.approx(4);
+            for(int i=0; i<4;i++){
+                printWriter.println(answ3.getValue(i,0));
+                printWriter.println(answ2.getValue(i,0));
+                printWriter.println(answ22.getValue(i,0));
+                printWriter.println(answ1.getValue(i,0));
+            }
         }
+        printWriter.close();
+    }
+
 
 }

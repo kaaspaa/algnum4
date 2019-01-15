@@ -14,7 +14,7 @@ public class Approximacy {
 		numberOfAgents = n;
 		matrixA = new MyMatrix<Double>(Double.class,m);
 		matrixB = new MyMatrix<Double>(Double.class,m,1);
-		resultMatrix = new MyMatrix<Double>(Double.class,m,1);
+		resultMatrix = new MyMatrix<Double>(Double.class,4,1);
 
 	}
 
@@ -45,13 +45,17 @@ public class Approximacy {
 	}
 
 	public MyMatrix<Double> approx(int casee) {
-		//AgentMatrix agentMatrix = new AgentMatrix(numberOfAgents);
+		GaussSeidel gaussSeidel = new GaussSeidel(numberOfAgents,200);
+		double[] matB = new double[numberOfAgents];
+		for(int i=0;i<numberOfAgents;i++)
+			matB[i] = 0.0;
+		gaussSeidel.setSizeOfMatrix(m);
 		matrixB.fillWithZero();
 		matrixA.fillWithZero();
 		resultMatrix.fillWithZero();
 		for(int n=0;n<10;n++) {
 			for (int i = 0; i < m; i++) {
-				matrixB.setValue(i,0,matrixB.getValue(i,0) + countT(i,casee));
+				matB[i] += countT(i,casee);
 				for(int l = 0; l < m; l++){
 					matrixA.setValue(i,l,matrixA.getValue(i,l) + countS(l + i));
 				}
@@ -60,13 +64,20 @@ public class Approximacy {
 		System.out.println("A:");
 		matrixA.printMatrix();
 		System.out.println("B:");
-		matrixB.printMatrix();
+		for(int i=0;i<matB.length;i++)
+			System.out.printf("%26.26s  \n", matB[i]);
 
-		MyMatrix<Double> pom = new MyMatrix<Double>(Double.class,m,1);
-		pom = resultMatrix.upgradedPartialChoiseGauss(matrixA,matrixB);
+		gaussSeidel.setMatrixA(matrixA);
+		gaussSeidel.setVectorB(matB);
+		gaussSeidel.setResultVector(resultMatrix);
+		resultMatrix = gaussSeidel.countGaussSeidelVector();
+		//System.out.println("agentm:");
+		//resultMatrix.printMatrix();
+		//MyMatrix<Double> pom = new MyMatrix<Double>(Double.class,m,1);
+		//pom = resultMatrix.(matrixA,matrixB);
 		System.out.println("case - " + casee);
-		pom.printMatrix();
-		return pom;
+		resultMatrix.printMatrix();
+		return resultMatrix;
 	}
 
 }

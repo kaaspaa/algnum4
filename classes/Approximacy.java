@@ -4,83 +4,80 @@ import org.ejml.data.DMatrixRMaj;
 import org.ejml.data.DMatrixSparseCSC;
 
 public class Approximacy {
-	private int degree;
-	int numberOfAgents;
-	public MyMatrix<Double> matrixA;
-	public MyMatrix<Double> matrixB;
-	public MyMatrix<Double> resultMatrix;
+	private MyMatrix<Double> matrixA;
+	private MyMatrix<Double> matrixB;
+	private MyMatrix<Double> resultMatrix;
+	private double[] s;
+	private double[] t;
 	private int m;
 
-	public Approximacy(int degree,int n) {
-		this.degree = degree;
-		m = degree+1;
-		numberOfAgents = n;
-		matrixA = new MyMatrix<Double>(Double.class,m);
-		matrixB = new MyMatrix<Double>(Double.class,m,1);
-		resultMatrix = new MyMatrix<Double>(Double.class,4,1);
+	public Approximacy(int m,double[] arguments, double times[]) {
+		this.m = m;
+		s = new double[2*m+1];
+		t = new double[m+1];
+		//numberOfAgents = n;
+		matrixA = new MyMatrix<Double>(Double.class,m+1);
+		matrixB = new MyMatrix<Double>(Double.class,m+1,1);
+		resultMatrix = new MyMatrix<Double>(Double.class,m+1,1);
 
+		resultMatrix.fillWithZero();
+		getMatrix(arguments);
+		getVector(arguments,times);
 	}
 
-	private double countS(int k) {
-		return Math.pow(numberOfAgents,k);
-	}
-
-	private double countT(int k,int casee){
-		double result;
-		Test test = new Test();
-
-		switch (casee) {
-			case 1:
-				{result = test.countSlowGaussTime(numberOfAgents) * countS(k);}
-			case 2:
-				{result = test.countFastGaussTime(numberOfAgents) * countS(k);}
-			case 3:
-				{result = test.countGaussSeidelTime(numberOfAgents) * countS(k);}
-			case 4:
-				{result = test.countResultsSparseTime(numberOfAgents) * countS(k);
-				break;}
-				default: {
-				result = 0.0;
+	private void getMatrix(double[] arguments) {
+		for(int k=0;k<m*2+1;k++){
+			s[k] = 0.0;
+			for (int i=0;i<arguments.length;i++){
+				s[k] += Math.pow(arguments[i],k);
 			}
+		}
+		for(int i=0;i<m+1;i++){
+			for(int l=0;l<m+1;l++){
+				matrixA.setValue(i,l,s[i+l]);
+			}
+		}
+	}
+
+	private void getVector(double[] arguments, double[] values) {
+		for(int k=0;k<m+1;k++){
+			t[k]=0.0;
+			for(int i=0;i<arguments.length;i++)
+				t[k] += values[i] * Math.pow(arguments[i],k);
+		}
+		for(int i=0;i<m+1;i++){
+			matrixB.setValue(i,0,t[i]);
+		}
+	}
+
+	public MyMatrix<Double> countResults() {
+		System.out.println("A:");
+		matrixA.printMatrix();
+		System.out.println("B:");
+		matrixB.printMatrix();
+		System.out.println();
+
+		resultMatrix = resultMatrix.upgradedPartialChoiseGauss(matrixA, matrixB);
+		resultMatrix.printMatrix();
+		return resultMatrix;
+	}
+
+	public double solveEquation(double x){
+		double pom = ((x+1)*(x+2))/2;
+		double result = 0.0;
+		for(int i=0;i<m+1;i++){
+			result += resultMatrix.getValue(i,0) * Math.pow(pom,i);
 		}
 
 		return result;
 	}
 
-	public MyMatrix<Double> approx(int casee) {
-		GaussSeidel gaussSeidel = new GaussSeidel(numberOfAgents,200);
-
-		double[] matB = new double[m];
-		for(int i=0;i<matB.length;i++)
-			matB[i] = 0.0;
-		gaussSeidel.setSizeOfMatrix(m);
-		matrixA.fillWithZero();
-		resultMatrix.fillWithZero();
-		//for(int n=0;n<10;n++) {
-			for (int i = 0; i < m; i++) {
-				matB[i] += countT(i,casee);
-				for(int l = 0; l < m; l++){
-					matrixA.setValue(i,l,matrixA.getValue(i,l) + countS(l + i));
-				}
-			}
-		//}
-		System.out.println("A:");
-		matrixA.printMatrix();
-		System.out.println("B:");
-		for(int i=0;i<matB.length;i++)
-			System.out.printf("%26.26s  \n", matB[i]);
-
-		gaussSeidel.setMatrixA(matrixA);
-		gaussSeidel.setVectorB(matB);
-		gaussSeidel.setResultVector(resultMatrix);
-		resultMatrix = gaussSeidel.countGaussSeidelVector();
-		//System.out.println("agentm:");
-		//resultMatrix.printMatrix();
-		//MyMatrix<Double> pom = new MyMatrix<Double>(Double.class,m,1);
-		//pom = resultMatrix.(matrixA,matrixB);
-		System.out.println("case - " + casee);
-		resultMatrix.printMatrix();
-		return resultMatrix;
+	public double probaSolve(double x){
+		double result = 0.0;
+		for(int i=0;i<m+1;i++){
+			result += resultMatrix.getValue(i,0) * Math.pow(x,m-i);
+		}
+		return  result;
 	}
 
 }

@@ -72,12 +72,4 @@ public class Approximacy {
 		return result;
 	}
 
-	public double probaSolve(double x){
-		double result = 0.0;
-		for(int i=0;i<m+1;i++){
-			result += resultMatrix.getValue(i,0) * Math.pow(x,m-i);
-		}
-		return  result;
-	}
-
 }

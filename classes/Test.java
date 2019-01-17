@@ -90,32 +90,156 @@ public class Test {
     }
         printWriter.close();
     }
-    public void countApproxAndWrite() throws IOException {
-        int endAgentNum = 30;
-        int startAgentNum = 15;
+
+    public void countAndWriteEverything() throws IOException {
+        int endAgentNum = 60;
+        int startAgentNum = 10;
+        //rozmiary
         double[] arguments = new double[endAgentNum - startAgentNum];
-        double[] times = new double[endAgentNum - startAgentNum];
+        //czasy wykonywania
+        double[] times1 = new double[endAgentNum - startAgentNum];//Gauss bez optymalizacji
+        double[] times2 = new double[endAgentNum - startAgentNum];//Gauss z optymalizacja
+        double[] times3 = new double[endAgentNum - startAgentNum];//Gauss-Seidel
+        //czasy do budowania
+        double startTime,endTime;
+        double[] buildTimes1 = new double[endAgentNum - startAgentNum];//Gauss bez optymalizacji
+        double[] buildTimes2 = new double[endAgentNum - startAgentNum];//Gausd z optymalizacja
+        double[] buildTimes3 = new double[endAgentNum - startAgentNum];//Gauss-Seidel
+        //do zapisywania
+        FileWriter fileWriter1 = new FileWriter("Czasy.csv");
+        PrintWriter printWriter1 = new PrintWriter(fileWriter1);
+        FileWriter fileWriter2 = new FileWriter("Approx.csv");
+        PrintWriter printWriter2 = new PrintWriter(fileWriter2);
+        FileWriter fileWriter3 = new FileWriter("Porownanie.csv");
+        PrintWriter printWriter3 = new PrintWriter(fileWriter3);
+
         for (int i = startAgentNum; i < endAgentNum; i++) {
             arguments[i - startAgentNum] = ((i + 1) * (i + 2)) / 2;
-            times[i - startAgentNum] = countSlowGaussTime(i);
+
+            startTime = System.nanoTime();
+            times1[i - startAgentNum] = countSlowGaussTime(i);//czas dzialania
+            endTime = System.nanoTime();
+
+            buildTimes1[i - startAgentNum] = endTime - startTime - times1[i - startAgentNum];//czas budowania
+
+            startTime = System.nanoTime();
+            times2[i - startAgentNum] = countFastGaussTime(i);//czas dzialania
+            endTime = System.nanoTime();
+
+            buildTimes2[i - startAgentNum] = endTime - startTime - times2[i - startAgentNum];//czas budowania
+
+            startTime = System.nanoTime();
+            times3[i - startAgentNum] = countGaussSeidelTime(i);//czas dzialania
+            endTime = System.nanoTime();
+
+            buildTimes3[i - startAgentNum] = endTime - startTime - times3[i - startAgentNum];//czas budowania
         }
-        Approximacy approximacy = new Approximacy(3, arguments, times);
-        MyMatrix<Double> results = new MyMatrix<Double>(Double.class, 4, 1);
-        results = approximacy.countResults();
+        //czasy:
+        printWriter1.println(";n;Gauss;Gauss(upgraded);GaussSeidel;Sparse; ;n;Gauss;Gauss(upgraded);GaussSeidel;Sparse;");
+        for(int i=0; i<times1.length; i++){
+            printWriter1.println("dzialanie;" + (i + startAgentNum) + ";" + times1[i] + ";" + times2[i] + ";" + times3[i] + ";" +
+            ";budowanie;" + (i + startAgentNum) + ";" + buildTimes1[i] + ";" + buildTimes2[i] + ";" + buildTimes3[i]);
 
-
-        FileWriter fileWriter = new FileWriter("Approx2.csv");
-        PrintWriter printWriter = new PrintWriter(fileWriter);
-        printWriter.print("Gauss(wolny);");
-        for (int i = 0; i < results.rows; i++) {
-            printWriter.print(results.getValue(i, 0) + ";");
-            System.out.print("x^" + (results.rows - i - 1) + ",");
         }
-        printWriter.println();
-        System.out.println("solve Eq = " + approximacy.solveEquation(28));
 
-        printWriter.close();
 
+        //wielomiany dzialanie:
+        Approximacy approximacy1 = new Approximacy(3, arguments, times1);
+        Approximacy approximacy2 = new Approximacy(2, arguments, times2);
+        Approximacy approximacy3 = new Approximacy(2, arguments, times3);
+        MyMatrix<Double> results1;
+        MyMatrix<Double> results2;
+        MyMatrix<Double> results3;
+        results1 = approximacy1.countResults();
+        results2 = approximacy2.countResults();
+        results3 = approximacy3.countResults();
+
+        printWriter2.println("Dzialanie:");
+        printWriter2.print("Gauss(bez optymalizacji);x^0;x^1;x^2;x^3;");
+        printWriter2.print("Gauss(zoptymalizowany);x^0;x^1;x^2;");
+        printWriter2.print("Gauss-Seidel;x^0;x^1;x^2;\n;");
+        for(int i=0;i<results1.rows;i++){
+            printWriter2.print(results1.getValue(i,0) + ";");
+        }
+        printWriter2.print(";");
+        for (int i = 0; i < results2.rows; i++) {
+            printWriter2.print(results2.getValue(i, 0) + ";");
+        }
+        printWriter2.print(";");
+        for(int i=0;i<results3.rows;i++){
+            printWriter2.print(results3.getValue(i,0) + ";");
+        }
+
+        //Wielomiany budowanie
+        Approximacy approximacy4 = new Approximacy(3, arguments, buildTimes1);
+        Approximacy approximacy5 = new Approximacy(2, arguments, buildTimes2);
+        Approximacy approximacy6 = new Approximacy(2, arguments, buildTimes3);
+        results1 = approximacy4.countResults();
+        results2 = approximacy5.countResults();
+        results3 = approximacy6.countResults();
+        printWriter2.println("\nBudowanie:");
+        printWriter2.print("Gauss(bez optymalizacji);x^0;x^1;x^2;x^3;");
+        printWriter2.print("Gauss(zoptymalizowany);x^0;x^1;x^2;");
+        printWriter2.print("Gauss-Seidel;x^0;x^1;x^2;\n;");
+        for(int i=0;i<results1.rows;i++){
+            printWriter2.print(results1.getValue(i,0) + ";");
+        }
+        printWriter2.print(";");
+        for (int i = 0; i < results2.rows; i++) {
+            printWriter2.print(results2.getValue(i, 0) + ";");
+        }
+        printWriter2.print(";");
+        for(int i=0;i<results3.rows;i++){
+            printWriter2.print(results3.getValue(i,0) + ";");
+        }
+
+        printWriter2.println("\nA teraz dzialanie + budowanie");
+
+        //wielomiany dzialanie + budowanie
+        double[] timesConn1 = new double[endAgentNum - startAgentNum];
+        double[] timesConn2 = new double[endAgentNum - startAgentNum];
+        double[] timesConn3 = new double[endAgentNum - startAgentNum];
+        for(int i=0;i<times1.length;i++){
+           timesConn1[i] = times1[i] + buildTimes1[i];
+           timesConn2[i] = times2[i] + buildTimes2[i];
+           timesConn3[i] = times3[i] + buildTimes3[i];
+        }
+        Approximacy approximacy7 = new Approximacy(3, arguments, timesConn1);
+        Approximacy approximacy8 = new Approximacy(2, arguments, timesConn2);
+        Approximacy approximacy9 = new Approximacy(2, arguments, timesConn3);
+        results1 = approximacy7.countResults();
+        results2 = approximacy8.countResults();
+        results3 = approximacy9.countResults();
+        printWriter2.print("Gauss(bez optymalizacji);x^0;x^1;x^2;x^3;");
+        printWriter2.print("Gauss(zoptymalizowany);x^0;x^1;x^2;");
+        printWriter2.print("Gauss-Seidel;x^0;x^1;x^2;\n;");
+        for(int i=0;i<results1.rows;i++){
+            printWriter2.print(results1.getValue(i,0) + ";");
+        }
+        printWriter2.print(";");
+        for (int i = 0; i < results2.rows; i++) {
+            printWriter2.print(results2.getValue(i, 0) + ";");
+        }
+        printWriter2.print(";");
+        for(int i=0;i<results3.rows;i++){
+            printWriter2.print(results3.getValue(i,0) + ";");
+        }
+
+
+        //porownanie
+        printWriter3.print("wyniki wychodzace;;;;;wyniki obliczone;\n");
+        printWriter3.print("liczba agentow;Gauss(bez optymalizacji);Gauss(zoptymalizowany);Gauss-Seidel;" +
+                ";liczba agentow;Gauss(bez optymalizacji);Gauss(zoptymalizowany);Gauss-Seidel;;Blad bezwzgledny Gauss;" +
+                " Blad bezwzgledny Gauss(zoptymalizowany); Blad bezwzgledny Gauss-Seidel\n");
+        for(int i=0;i<times1.length;i++){
+            printWriter3.print((i+ startAgentNum) + ";" + timesConn1[i] + ";" + timesConn2[i] + ";" + timesConn3[i] + ";;"
+                    +(i+ startAgentNum) + ";" + approximacy7.solveEquation(i+ startAgentNum) + ";" + approximacy8.solveEquation(i + startAgentNum) + ";" + approximacy9.solveEquation(i + startAgentNum) + ";;"
+                    + Math.abs(timesConn1[i] -  approximacy7.solveEquation(i+ startAgentNum)) + ";" + Math.abs(timesConn2[i] -  approximacy8.solveEquation(i+ startAgentNum)) + ";" + Math.abs(timesConn3[i] -  approximacy9.solveEquation(i+ startAgentNum)) + "\n");
+        }
+        printWriter3.print("\nCzas dla 100.000 z budowaniem\n Gauss(bez optymalizacji);" + approximacy7.solveEquation(450) + ";Gauss(z optymalizacja);" + approximacy8.solveEquation(450) + ";Gauss-Seidel;" + approximacy9.solveEquation(450) + "\n");
+        printWriter1.close();
+        printWriter2.close();
+        printWriter3.close();
     }
 
 }

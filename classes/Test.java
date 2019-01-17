@@ -38,11 +38,6 @@ public class Test {
         return results;
     }
 
-    public double countResultsSparseTime(int numberOfAgents){
-        SparseMatrix sparseMatrix = new SparseMatrix(numberOfAgents);
-        return sparseMatrix.countTime();
-    }
-
     public double countSlowGaussTime(int numberOfAgents) {
         AgentMatrix ag = new AgentMatrix(numberOfAgents);
         return ag.countTimeSlow();
@@ -91,6 +86,13 @@ public class Test {
         printWriter.close();
     }
 
+    public double countSparseTime(int n){
+        double time;
+        SparseMatrixMethod s = new SparseMatrixMethod(n);
+        time = s.countSparseTime();
+        return time;
+    }
+
     public void countAndWriteEverything() throws IOException {
         int endAgentNum = 60;
         int startAgentNum = 10;
@@ -100,11 +102,13 @@ public class Test {
         double[] times1 = new double[endAgentNum - startAgentNum];//Gauss bez optymalizacji
         double[] times2 = new double[endAgentNum - startAgentNum];//Gauss z optymalizacja
         double[] times3 = new double[endAgentNum - startAgentNum];//Gauss-Seidel
+        double[] times4 = new double[endAgentNum - startAgentNum];//Sparse
         //czasy do budowania
         double startTime,endTime;
         double[] buildTimes1 = new double[endAgentNum - startAgentNum];//Gauss bez optymalizacji
         double[] buildTimes2 = new double[endAgentNum - startAgentNum];//Gausd z optymalizacja
         double[] buildTimes3 = new double[endAgentNum - startAgentNum];//Gauss-Seidel
+        double[] buildTimes4 = new double[endAgentNum - startAgentNum];//Sparse
         //do zapisywania
         FileWriter fileWriter1 = new FileWriter("Czasy.csv");
         PrintWriter printWriter1 = new PrintWriter(fileWriter1);
@@ -133,12 +137,18 @@ public class Test {
             endTime = System.nanoTime();
 
             buildTimes3[i - startAgentNum] = endTime - startTime - times3[i - startAgentNum];//czas budowania
+
+            startTime = System.nanoTime();
+            times4[i - startAgentNum] = countSparseTime(i);//czas dzialania
+            endTime = System.nanoTime();
+
+            buildTimes4[i - startAgentNum] = endTime - startTime - times4[i-startAgentNum];//czas budowania
         }
         //czasy:
         printWriter1.println(";n;Gauss;Gauss(upgraded);GaussSeidel;Sparse; ;n;Gauss;Gauss(upgraded);GaussSeidel;Sparse;");
         for(int i=0; i<times1.length; i++){
-            printWriter1.println("dzialanie;" + (i + startAgentNum) + ";" + times1[i] + ";" + times2[i] + ";" + times3[i] + ";" +
-            ";budowanie;" + (i + startAgentNum) + ";" + buildTimes1[i] + ";" + buildTimes2[i] + ";" + buildTimes3[i]);
+            printWriter1.println("dzialanie;" + (i + startAgentNum) + ";" + times1[i] + ";" + times2[i] + ";" + times3[i] + ";" + times4[i] +
+            ";budowanie;" + (i + startAgentNum) + ";" + buildTimes1[i] + ";" + buildTimes2[i] + ";" + buildTimes3[i] + ";" + buildTimes4[i]);
 
         }
 
@@ -147,17 +157,21 @@ public class Test {
         Approximacy approximacy1 = new Approximacy(3, arguments, times1);
         Approximacy approximacy2 = new Approximacy(2, arguments, times2);
         Approximacy approximacy3 = new Approximacy(2, arguments, times3);
+        Approximacy approximacy4 = new Approximacy(1,arguments, times4);
         MyMatrix<Double> results1;
         MyMatrix<Double> results2;
         MyMatrix<Double> results3;
+        MyMatrix<Double> results4;
         results1 = approximacy1.countResults();
         results2 = approximacy2.countResults();
         results3 = approximacy3.countResults();
+        results4 = approximacy4.countResults();
 
         printWriter2.println("Dzialanie:");
         printWriter2.print("Gauss(bez optymalizacji);x^0;x^1;x^2;x^3;");
         printWriter2.print("Gauss(zoptymalizowany);x^0;x^1;x^2;");
-        printWriter2.print("Gauss-Seidel;x^0;x^1;x^2;\n;");
+        printWriter2.print("Gauss-Seidel;x^0;x^1;x^2;");
+        printWriter2.print("Sparse;x^0;x^1;\n;");
         for(int i=0;i<results1.rows;i++){
             printWriter2.print(results1.getValue(i,0) + ";");
         }
@@ -168,19 +182,26 @@ public class Test {
         printWriter2.print(";");
         for(int i=0;i<results3.rows;i++){
             printWriter2.print(results3.getValue(i,0) + ";");
+        }
+        printWriter2.print(";");
+        for(int i=0;i<results4.rows;i++){
+            printWriter2.print(results4.getValue(i,0) + ";");
         }
 
         //Wielomiany budowanie
-        Approximacy approximacy4 = new Approximacy(3, arguments, buildTimes1);
-        Approximacy approximacy5 = new Approximacy(2, arguments, buildTimes2);
-        Approximacy approximacy6 = new Approximacy(2, arguments, buildTimes3);
-        results1 = approximacy4.countResults();
-        results2 = approximacy5.countResults();
-        results3 = approximacy6.countResults();
+        Approximacy approximacy5 = new Approximacy(3, arguments, buildTimes1);
+        Approximacy approximacy6 = new Approximacy(2, arguments, buildTimes2);
+        Approximacy approximacy7 = new Approximacy(2, arguments, buildTimes3);
+        Approximacy approximacy8 = new Approximacy(1, arguments, buildTimes4);
+        results1 = approximacy5.countResults();
+        results2 = approximacy6.countResults();
+        results3 = approximacy7.countResults();
+        results4 = approximacy8.countResults();
         printWriter2.println("\nBudowanie:");
         printWriter2.print("Gauss(bez optymalizacji);x^0;x^1;x^2;x^3;");
         printWriter2.print("Gauss(zoptymalizowany);x^0;x^1;x^2;");
-        printWriter2.print("Gauss-Seidel;x^0;x^1;x^2;\n;");
+        printWriter2.print("Gauss-Seidel;x^0;x^1;x^2;");
+        printWriter2.print("Sparse;x^0;x^1;\n;");
         for(int i=0;i<results1.rows;i++){
             printWriter2.print(results1.getValue(i,0) + ";");
         }
@@ -191,6 +212,10 @@ public class Test {
         printWriter2.print(";");
         for(int i=0;i<results3.rows;i++){
             printWriter2.print(results3.getValue(i,0) + ";");
+        }
+        printWriter2.print(";");
+        for(int i=0;i<results4.rows;i++){
+            printWriter2.print(results4.getValue(i,0) + ";");
         }
 
         printWriter2.println("\nA teraz dzialanie + budowanie");
@@ -199,20 +224,25 @@ public class Test {
         double[] timesConn1 = new double[endAgentNum - startAgentNum];
         double[] timesConn2 = new double[endAgentNum - startAgentNum];
         double[] timesConn3 = new double[endAgentNum - startAgentNum];
+        double[] timesConn4 = new double[endAgentNum - startAgentNum];
         for(int i=0;i<times1.length;i++){
            timesConn1[i] = times1[i] + buildTimes1[i];
            timesConn2[i] = times2[i] + buildTimes2[i];
            timesConn3[i] = times3[i] + buildTimes3[i];
+           timesConn4[i] = times4[i] + buildTimes4[i];
         }
-        Approximacy approximacy7 = new Approximacy(3, arguments, timesConn1);
-        Approximacy approximacy8 = new Approximacy(2, arguments, timesConn2);
-        Approximacy approximacy9 = new Approximacy(2, arguments, timesConn3);
-        results1 = approximacy7.countResults();
-        results2 = approximacy8.countResults();
-        results3 = approximacy9.countResults();
+        Approximacy approximacy9 = new Approximacy(3, arguments, timesConn1);
+        Approximacy approximacy10 = new Approximacy(2, arguments, timesConn2);
+        Approximacy approximacy11 = new Approximacy(2, arguments, timesConn3);
+        Approximacy approximacy12 = new Approximacy(1, arguments, timesConn4);
+        results1 = approximacy9.countResults();
+        results2 = approximacy10.countResults();
+        results3 = approximacy11.countResults();
+        results4 = approximacy12.countResults();
         printWriter2.print("Gauss(bez optymalizacji);x^0;x^1;x^2;x^3;");
         printWriter2.print("Gauss(zoptymalizowany);x^0;x^1;x^2;");
-        printWriter2.print("Gauss-Seidel;x^0;x^1;x^2;\n;");
+        printWriter2.print("Gauss-Seidel;x^0;x^1;x^2;;");
+        printWriter2.print("Sparse;x^0;x^1;\n;");
         for(int i=0;i<results1.rows;i++){
             printWriter2.print(results1.getValue(i,0) + ";");
         }
@@ -224,19 +254,24 @@ public class Test {
         for(int i=0;i<results3.rows;i++){
             printWriter2.print(results3.getValue(i,0) + ";");
         }
+        printWriter2.print(";");
+        for(int i=0;i<results4.rows;i++){
+            printWriter2.print(results4.getValue(i,0) + ";");
+        }
 
 
         //porownanie
         printWriter3.print("wyniki wychodzace;;;;;wyniki obliczone;\n");
-        printWriter3.print("liczba agentow;Gauss(bez optymalizacji);Gauss(zoptymalizowany);Gauss-Seidel;" +
-                ";liczba agentow;Gauss(bez optymalizacji);Gauss(zoptymalizowany);Gauss-Seidel;;Blad bezwzgledny Gauss;" +
-                " Blad bezwzgledny Gauss(zoptymalizowany); Blad bezwzgledny Gauss-Seidel\n");
+        printWriter3.print("liczba agentow;Gauss(bez optymalizacji);Gauss(zoptymalizowany);Gauss-Seidel;Sparse" +
+                ";liczba agentow;Gauss(bez optymalizacji);Gauss(zoptymalizowany);Gauss-Seidel;Sparse" +
+                ";Blad bezwzgledny Gauss;Blad bezwzgledny Gauss(zoptymalizowany); Blad bezwzgledny Gauss-Seidel\n");
         for(int i=0;i<times1.length;i++){
-            printWriter3.print((i+ startAgentNum) + ";" + timesConn1[i] + ";" + timesConn2[i] + ";" + timesConn3[i] + ";;"
-                    +(i+ startAgentNum) + ";" + approximacy7.solveEquation(i+ startAgentNum) + ";" + approximacy8.solveEquation(i + startAgentNum) + ";" + approximacy9.solveEquation(i + startAgentNum) + ";;"
-                    + Math.abs(timesConn1[i] -  approximacy7.solveEquation(i+ startAgentNum)) + ";" + Math.abs(timesConn2[i] -  approximacy8.solveEquation(i+ startAgentNum)) + ";" + Math.abs(timesConn3[i] -  approximacy9.solveEquation(i+ startAgentNum)) + "\n");
+            printWriter3.print((i+ startAgentNum) + ";" + timesConn1[i] + ";" + timesConn2[i] + ";" + timesConn3[i] + ";" + timesConn4[i] + ";"
+                    +(i+ startAgentNum) + ";" + approximacy9.solveEquation(i+ startAgentNum) + ";" + approximacy10.solveEquation(i + startAgentNum) + ";" + approximacy11.solveEquation(i + startAgentNum) + ";" + approximacy12.solveEquation(i + startAgentNum) + ";"
+                    + Math.abs(timesConn1[i] -  approximacy9.solveEquation(i+ startAgentNum)) + ";" + Math.abs(timesConn2[i] -  approximacy10.solveEquation(i+ startAgentNum)) + ";" + Math.abs(timesConn3[i] -  approximacy11.solveEquation(i + startAgentNum)) + ";"+ Math.abs(timesConn4[i] - approximacy12.solveEquation(i + startAgentNum))  + "\n");
         }
-        printWriter3.print("\nCzas dla 100.000 z budowaniem\n Gauss(bez optymalizacji);" + approximacy7.solveEquation(450) + ";Gauss(z optymalizacja);" + approximacy8.solveEquation(450) + ";Gauss-Seidel;" + approximacy9.solveEquation(450) + "\n");
+        printWriter3.print("\nCzas dla 100.000 z budowaniem\n Gauss(bez optymalizacji);" + approximacy9.solveEquation(450) + ";Gauss(z optymalizacja);" + approximacy10.solveEquation(450) + ";Gauss-Seidel;" + approximacy11.solveEquation(450) + ";Sparse;" + approximacy12.solveEquation(450) + "\n");
+
         printWriter1.close();
         printWriter2.close();
         printWriter3.close();
